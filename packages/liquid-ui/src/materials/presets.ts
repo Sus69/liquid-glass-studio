@@ -115,7 +115,7 @@ export const LIQUID_PRESETS: Record<LiquidPresetName, LiquidMaterial> = {
     refractionDistance: 0.05,
     dispersion: 7,
     fresnel: 0.2,
-    fresnelRange: 30,
+    fresnelRange: 36,
     fresnelHardness: 0.2,
     glare: 0.9,
     glareRange: 30,

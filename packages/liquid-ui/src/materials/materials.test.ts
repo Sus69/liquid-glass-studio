@@ -17,7 +17,7 @@ describe('material presets', () => {
     expect(s.refraction).toBe(1.4);
     expect(s.refractionDistance).toBe(0.05);
     expect(s.dispersion).toBe(7);
-    expect(s.fresnelRange).toBe(30);
+    expect(s.fresnelRange).toBe(36);
     expect(s.glare).toBeCloseTo(0.9, 5);
     expect(s.glareAngle).toBe(-45);
     expect(s.blur).toBe(1);

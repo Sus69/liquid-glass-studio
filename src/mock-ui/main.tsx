@@ -14,13 +14,16 @@ import bgVideo from '../assets/bg-video-fish.mp4';
 
 const params = new URLSearchParams(window.location.search);
 const domMode = params.get('dom') === '1';
-const useVideo = params.get('bg') === 'video';
+const bgParam = params.get('bg');
+const useVideo = bgParam === 'video';
 
 const background: EngineBgType | undefined = domMode
   ? undefined
   : useVideo
     ? { kind: 'video', url: bgVideo }
-    : { kind: 'image', url: bgTahoe };
+    : bgParam === 'grid'
+      ? { kind: 'procedural', index: 0 }
+      : { kind: 'image', url: bgTahoe };
 
 // Kill the CSS `backdrop-filter` on every liquid surface — the user wants the
 // GPU material only (no interior CSS blur anywhere, tooltip/modal included).
@@ -40,7 +43,7 @@ createRoot(document.getElementById('root')!).render(
       backend={backendParam === 'webgl' || backendParam === 'webgpu' ? backendParam : 'auto'}
       debugPreserveDrawingBuffer={params.get('readback') === '1'}
     >
-      <PrismApp wallpaper={domMode} dark={useVideo || domMode} />
+      <PrismApp wallpaper={domMode} dark={domMode || useVideo || bgParam !== 'grid'} />
     </LiquidProvider>
   </StrictMode>,
 );

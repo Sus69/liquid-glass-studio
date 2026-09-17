@@ -13,46 +13,84 @@ import {
   LiquidPill,
   LiquidToggle,
   LiquidTooltip,
+  type LiquidMaterial,
   type LiquidMaterialOverride,
 } from 'liquid-ui';
 
 /* ------------------------------------------------------------------ */
-/* THE MAX MATERIAL — every knob from the Studio's Leva panel at or    */
-/* near its maximum. Mapped to the engine uniforms (thickness →        */
-/* u_refThickness etc.) by materials/toUniforms.ts.                    */
+/* EXACT STUDIO REFERENCE VALUES (Liquid Glass Studio Source of Truth)*/
 /* ------------------------------------------------------------------ */
 
-const MAX_GLASS: LiquidMaterialOverride = {
-  // Geometry
-  thickness: 80,           // max 80  (u_refThickness)
-  refraction: 4,           // max 4   (u_refFactor — index of refraction)
-  refractionDistance: 0.2, // max 0.2 (u_refDistance)
-  dispersion: 50,          // max 50  (u_refDispersion — chromatic aberration)
-  merge: 0.12,             // smin blob merging (Leva max 0.3)
+export const PRISM_MATERIAL: LiquidMaterial = {
+  // Material settings
+  thickness: 20.00,
+  refractionDistance: 0.05,
+  refraction: 1.40,
+  dispersion: 7.00,
 
-  // Edge lighting — factors are 0-1 (Leva maxes 100-120 /100)
-  fresnel: 1,              // u_refFresnelFactor (max 1)
-  fresnelRange: 100,       // max 100
-  fresnelHardness: 1,      // max 1
-  glare: 1,                // u_glareFactor (max 1.2)
-  glareRange: 100,         // max 100
-  glareHardness: 1,        // max 1
-  glareConvergence: 1,     // max 1
-  glareOppositeFactor: 1,  // max 1
-  glareAngle: -45,
+  fresnelRange: 36.00,
+  fresnelHardness: 0.20,
+  fresnel: 0.20,
 
-  // Depth
-  shadow: 1,               // max 1 (u_shadowFactor)
-  shadowExpand: 100,       // max 100
-  shadowOffset: { x: 0, y: -30 },
+  glareRange: 30.00,
+  glareHardness: 0.20,
+  glare: 0.90,
+  glareConvergence: 0.50,
+  glareOppositeFactor: 0.80,
+  glareAngle: -45.0,
 
-  // Shape
-  roundness: 7,            // superellipse max 7 (max squircle)
+  blur: 1,
+  borderBlend: true,
 
-  // NO blur — explicitly off
-  blur: 0,
-  borderBlend: false,
   tint: { r: 255, g: 255, b: 255, a: 0 },
+
+  shadowExpand: 25.00,
+  shadow: 0.15,
+  shadowOffset: {
+    x: 0,
+    y: -10,
+  },
+
+  // Shape settings
+  merge: 0.05,
+  radius: 16,
+  roundness: 5.00,
+};
+
+export const PRISM_SHAPE = {
+  width: 200,
+  height: 200,
+  radius: 80,
+  superEllipseFactor: 5.00,
+  mergeRate: 0.05,
+  showSecondShape: true,
+};
+
+export const PRISM_ANIMATION = {
+  morph: 10.00,
+};
+
+/* ------------------------------------------------------------------ */
+/* Glass Hierarchy: Coherent material system for nested elements     */
+/* Smaller controls feel like smaller pieces of that same material    */
+/* ------------------------------------------------------------------ */
+
+/** For interactive buttons, inputs and toggles (32-48px) */
+export const PRISM_CONTROL_MATERIAL: LiquidMaterialOverride = {
+  ...PRISM_MATERIAL,
+  thickness: 10.00,
+  shadowExpand: 14.00,
+  shadow: 0.10,
+  shadowOffset: { x: 0, y: -4 },
+};
+
+/** For compact status pills and subtle indicators */
+export const PRISM_SUBTLE_MATERIAL: LiquidMaterialOverride = {
+  ...PRISM_MATERIAL,
+  thickness: 8.00,
+  shadowExpand: 10.00,
+  shadow: 0.08,
+  shadowOffset: { x: 0, y: -2 },
 };
 
 /* ------------------------------------------------------------------ */
@@ -281,23 +319,25 @@ export function PrismApp({
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <LiquidBlob
-              merge={0.3}
-              glass={MAX_GLASS}
+              merge={PRISM_SHAPE.mergeRate}
+              glass={PRISM_MATERIAL}
               style={{ width: 56, height: 56, position: 'relative' }}
             >
               <LiquidBlobShape x={4} y={6} width={26} height={26} radius={13} />
-              <LiquidBlobShape x={22} y={22} width={22} height={22} radius={11} />
+              {PRISM_SHAPE.showSecondShape && (
+                <LiquidBlobShape x={22} y={22} width={22} height={22} radius={11} />
+              )}
             </LiquidBlob>
             <div>
               <div style={{ fontWeight: 800, fontSize: 17, letterSpacing: 0.3 }}>Prism</div>
-              <div style={{ fontSize: 11, opacity: 0.55 }}>max material build</div>
+              <div style={{ fontSize: 11, opacity: 0.55 }}>Liquid Glass Studio build</div>
             </div>
           </div>
 
           <LiquidInput
             aria-label="Search tracks"
             placeholder="Search tracks or artists…"
-            glass={MAX_GLASS}
+            glass={PRISM_CONTROL_MATERIAL}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             leading={<Icon.Search />}
@@ -306,21 +346,21 @@ export function PrismApp({
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <LiquidTooltip content="Notifications">
-              <LiquidIconButton aria-label="Notifications" glass={MAX_GLASS} radius={13}>
+              <LiquidIconButton aria-label="Notifications" glass={PRISM_CONTROL_MATERIAL} radius={13}>
                 <Icon.Bell />
               </LiquidIconButton>
             </LiquidTooltip>
             <LiquidTooltip content="Settings">
               <LiquidIconButton
                 aria-label="Settings"
-                glass={MAX_GLASS}
+                glass={PRISM_CONTROL_MATERIAL}
                 radius={13}
                 onClick={() => setModalOpen(true)}
               >
                 <Icon.Gear />
               </LiquidIconButton>
             </LiquidTooltip>
-            <LiquidPill glass={MAX_GLASS} statusColor="#34d399">
+            <LiquidPill glass={PRISM_SUBTLE_MATERIAL} statusColor="#34d399">
               Online
             </LiquidPill>
           </div>
@@ -330,7 +370,7 @@ export function PrismApp({
         <main style={{ display: 'flex', gap: 22, alignItems: 'stretch', flexWrap: 'wrap' }}>
           <LiquidCard
             interactive
-            glass={MAX_GLASS}
+            glass={PRISM_MATERIAL}
             radius={28}
             style={{ flex: '1 1 420px', padding: 28, minWidth: 320 }}
           >
@@ -351,7 +391,7 @@ export function PrismApp({
                 🌊
               </div>
               <div style={{ minWidth: 0 }}>
-                <LiquidPill glass={MAX_GLASS} statusColor="#7de0ff" style={{ marginBottom: 10 }}>
+                <LiquidPill glass={PRISM_SUBTLE_MATERIAL} statusColor="#7de0ff" style={{ marginBottom: 10 }}>
                   Now playing · {view}
                 </LiquidPill>
                 <h1 style={{ margin: '0 0 4px', fontSize: 26, fontWeight: 800, letterSpacing: -0.3 }}>
@@ -378,31 +418,31 @@ export function PrismApp({
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <LiquidIconButton aria-label="Shuffle" glass={MAX_GLASS} size={38} radius={13}>
+              <LiquidIconButton aria-label="Shuffle" glass={PRISM_CONTROL_MATERIAL} size={38} radius={13}>
                 <Icon.Shuffle />
               </LiquidIconButton>
-              <LiquidIconButton aria-label="Previous track" glass={MAX_GLASS} size={42} radius={14}>
+              <LiquidIconButton aria-label="Previous track" glass={PRISM_CONTROL_MATERIAL} size={42} radius={14}>
                 <Icon.SkipBack />
               </LiquidIconButton>
               <LiquidIconButton
                 aria-label={playing ? 'Pause' : 'Play'}
-                glass={MAX_GLASS}
+                glass={PRISM_CONTROL_MATERIAL}
                 size={54}
                 radius={18}
                 onClick={() => setPlaying((p) => !p)}
               >
                 {playing ? <Icon.Pause /> : <Icon.Play />}
               </LiquidIconButton>
-              <LiquidIconButton aria-label="Next track" glass={MAX_GLASS} size={42} radius={14}>
+              <LiquidIconButton aria-label="Next track" glass={PRISM_CONTROL_MATERIAL} size={42} radius={14}>
                 <Icon.SkipFwd />
               </LiquidIconButton>
-              <LiquidIconButton aria-label="Repeat" glass={MAX_GLASS} size={38} radius={13}>
+              <LiquidIconButton aria-label="Repeat" glass={PRISM_CONTROL_MATERIAL} size={38} radius={13}>
                 <Icon.Repeat />
               </LiquidIconButton>
               <div style={{ flex: 1 }} />
               <LiquidIconButton
                 aria-label={liked ? 'Unlike' : 'Like'}
-                glass={MAX_GLASS}
+                glass={PRISM_CONTROL_MATERIAL}
                 size={38}
                 radius={13}
                 onClick={() => setLiked((l) => !l)}
@@ -422,7 +462,7 @@ export function PrismApp({
               minWidth: 300,
             }}
           >
-            <LiquidDiv glass={MAX_GLASS} radius={24} padding={20} style={{ flex: 1 }}>
+            <LiquidDiv glass={PRISM_MATERIAL} radius={24} padding={20} style={{ flex: 1 }}>
               <div
                 style={{
                   display: 'flex',
@@ -432,7 +472,7 @@ export function PrismApp({
                 }}
               >
                 <h2 style={{ margin: 0, fontSize: 15, fontWeight: 700 }}>Up next</h2>
-                <LiquidPill glass={MAX_GLASS} style={{ fontSize: 11 }}>
+                <LiquidPill glass={PRISM_SUBTLE_MATERIAL} style={{ fontSize: 11 }}>
                   {tracks.length} tracks
                 </LiquidPill>
               </div>
@@ -477,7 +517,7 @@ export function PrismApp({
               </div>
             </LiquidDiv>
 
-            <LiquidDiv glass={MAX_GLASS} radius={24} padding={20}>
+            <LiquidDiv glass={PRISM_MATERIAL} radius={24} padding={20}>
               <h2 style={{ margin: '0 0 14px', fontSize: 15, fontWeight: 700 }}>Playback</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <Row label="Hi-res audio">
@@ -485,7 +525,7 @@ export function PrismApp({
                     checked={hiRes}
                     onCheckedChange={setHiRes}
                     aria-label="Hi-res audio"
-                    glass={MAX_GLASS}
+                    glass={PRISM_CONTROL_MATERIAL}
                   />
                 </Row>
                 <Row label="Lossless only">
@@ -493,11 +533,11 @@ export function PrismApp({
                     checked={losslessOnly}
                     onCheckedChange={setLosslessOnly}
                     aria-label="Lossless only"
-                    glass={MAX_GLASS}
+                    glass={PRISM_CONTROL_MATERIAL}
                   />
                 </Row>
                 <Row label="Quality">
-                  <LiquidPill glass={MAX_GLASS} statusColor="#a78bfa" style={{ fontSize: 11 }}>
+                  <LiquidPill glass={PRISM_SUBTLE_MATERIAL} statusColor="#a78bfa" style={{ fontSize: 11 }}>
                     {hiRes ? '24-bit / 192 kHz' : 'Lossless'}
                   </LiquidPill>
                 </Row>
@@ -505,7 +545,7 @@ export function PrismApp({
                   <LiquidButton
                     size="sm"
                     variant="ghost"
-                    glass={MAX_GLASS}
+                    glass={PRISM_CONTROL_MATERIAL}
                     onClick={() => setModalOpen(true)}
                   >
                     Manage plan
@@ -529,7 +569,7 @@ export function PrismApp({
           }}
         >
           <div style={{ pointerEvents: 'auto' }}>
-            <LiquidDock magnification={1.5} proximity={120} radius={26} glass={MAX_GLASS}>
+            <LiquidDock magnification={1.5} proximity={120} radius={26} glass={PRISM_MATERIAL}>
               {([
                 ['Home', <Icon.Home />],
                 ['Explore', <Icon.Compass />],
@@ -540,7 +580,7 @@ export function PrismApp({
                 <LiquidDockItem
                   key={label}
                   aria-label={label}
-                  glass={MAX_GLASS}
+                  glass={PRISM_CONTROL_MATERIAL}
                   onClick={() => setView(label)}
                   style={{
                     width: 52,
@@ -562,13 +602,13 @@ export function PrismApp({
           open={modalOpen}
           onClose={() => setModalOpen(false)}
           ariaLabel="Account settings"
-          glass={MAX_GLASS}
+          glass={PRISM_MATERIAL}
           radius={26}
         >
           <div style={{ color: fg, minWidth: 340 }}>
             <h2 style={{ margin: '0 0 6px', fontSize: 19, fontWeight: 800 }}>Account settings</h2>
             <p style={{ margin: '0 0 18px', fontSize: 13, opacity: 0.65 }}>
-              Mock dialog rendered on a max-material liquid surface.
+              Mock dialog rendered on a liquid glass surface.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
               <Row label="Hi-res audio">
@@ -576,7 +616,7 @@ export function PrismApp({
                   checked={hiRes}
                   onCheckedChange={setHiRes}
                   aria-label="Hi-res audio"
-                  glass={MAX_GLASS}
+                  glass={PRISM_CONTROL_MATERIAL}
                 />
               </Row>
               <Row label="Lossless only">
@@ -584,15 +624,15 @@ export function PrismApp({
                   checked={losslessOnly}
                   onCheckedChange={setLosslessOnly}
                   aria-label="Lossless only"
-                  glass={MAX_GLASS}
+                  glass={PRISM_CONTROL_MATERIAL}
                 />
               </Row>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
-              <LiquidButton variant="ghost" glass={MAX_GLASS} onClick={() => setModalOpen(false)}>
+              <LiquidButton variant="ghost" glass={PRISM_CONTROL_MATERIAL} onClick={() => setModalOpen(false)}>
                 Cancel
               </LiquidButton>
-              <LiquidButton variant="primary" glass={MAX_GLASS} onClick={() => setModalOpen(false)}>
+              <LiquidButton variant="primary" glass={PRISM_CONTROL_MATERIAL} onClick={() => setModalOpen(false)}>
                 Save changes
               </LiquidButton>
             </div>
