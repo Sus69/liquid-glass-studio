@@ -1,0 +1,119 @@
+{
+  "$schema": "./navigation.schema.json",
+  "name": "Liquid UI Documentation",
+  "version": "0.1.0",
+  "sections": [
+    {
+      "id": "introduction",
+      "title": "Introduction",
+      "items": [
+        { "id": "what-is-liquid-ui", "title": "What is Liquid UI?", "path": "introduction/index.md", "type": "concept" },
+        { "id": "why-liquid-glass", "title": "Why Liquid Glass?", "path": "introduction/why-liquid-glass.md", "type": "concept" },
+        { "id": "architecture-overview", "title": "Architecture Overview", "path": "introduction/architecture.md", "type": "concept" }
+      ]
+    },
+    {
+      "id": "getting-started",
+      "title": "Getting Started",
+      "items": [
+        { "id": "installation", "title": "Installation", "path": "getting-started/installation.md", "type": "guide" },
+        { "id": "quickstart", "title": "Quick Start", "path": "getting-started/quickstart.md", "type": "guide" },
+        { "id": "first-surface", "title": "Your First Glass Surface", "path": "getting-started/first-surface.md", "type": "guide" },
+        { "id": "using-provider", "title": "Using LiquidProvider", "path": "getting-started/provider.md", "type": "guide" },
+        { "id": "backend-selection", "title": "Choosing a Backend", "path": "getting-started/backend-selection.md", "type": "guide" }
+      ]
+    },
+    {
+      "id": "core-concepts",
+      "title": "Core Concepts",
+      "items": [
+        { "id": "concept-surfaces", "title": "Liquid Surfaces", "path": "core-concepts/surfaces.md", "type": "concept" },
+        { "id": "concept-materials", "title": "Materials & Optics", "path": "core-concepts/materials.md", "type": "concept" },
+        { "id": "concept-presets", "title": "Presets & Overrides", "path": "core-concepts/presets.md", "type": "concept" },
+        { "id": "concept-shapes", "title": "Shapes & Squircles", "path": "core-concepts/shapes.md", "type": "concept" },
+        { "id": "concept-backdrops", "title": "Backdrop Modes", "path": "core-concepts/backdrops.md", "type": "concept" },
+        { "id": "concept-interaction", "title": "Interaction & Springs", "path": "core-concepts/interaction.md", "type": "concept" }
+      ]
+    },
+    {
+      "id": "components",
+      "title": "Components",
+      "items": [
+        { "id": "comp-surface", "title": "LiquidSurface", "path": "components/liquid-surface.md", "type": "component" },
+        { "id": "comp-div", "title": "LiquidDiv", "path": "components/liquid-div.md", "type": "component" },
+        { "id": "comp-button", "title": "LiquidButton", "path": "components/liquid-button.md", "type": "component" },
+        { "id": "comp-card", "title": "LiquidCard", "path": "components/liquid-card.md", "type": "component" },
+        { "id": "comp-pill", "title": "LiquidPill", "path": "components/liquid-pill.md", "type": "component" },
+        { "id": "comp-input", "title": "LiquidInput", "path": "components/liquid-input.md", "type": "component" },
+        { "id": "comp-icon-button", "title": "LiquidIconButton", "path": "components/liquid-icon-button.md", "type": "component" },
+        { "id": "comp-toggle", "title": "LiquidToggle", "path": "components/liquid-toggle.md", "type": "component" },
+        { "id": "comp-tooltip", "title": "LiquidTooltip", "path": "components/liquid-tooltip.md", "type": "component" },
+        { "id": "comp-modal", "title": "LiquidModal", "path": "components/liquid-modal.md", "type": "component" },
+        { "id": "comp-dock", "title": "LiquidDock & Item", "path": "components/liquid-dock.md", "type": "component" },
+        { "id": "comp-blob", "title": "LiquidBlob & Shape", "path": "components/liquid-blob.md", "type": "component" }
+      ]
+    },
+    {
+      "id": "materials",
+      "title": "Materials & Optics",
+      "items": [
+        { "id": "mat-system", "title": "Material System", "path": "materials/system.md", "type": "concept" },
+        { "id": "mat-properties", "title": "Property Reference", "path": "materials/properties.md", "type": "reference" },
+        { "id": "mat-presets", "title": "Built-in Presets", "path": "materials/presets.md", "type": "reference" },
+        { "id": "mat-custom", "title": "Creating Custom Materials", "path": "materials/custom-materials.md", "type": "guide" },
+        { "id": "mat-composition", "title": "Composition & Overrides", "path": "materials/composition.md", "type": "guide" }
+      ]
+    },
+    {
+      "id": "guides",
+      "title": "Guides",
+      "items": [
+        { "id": "guide-interfaces", "title": "Building Glass UIs", "path": "guides/building-interfaces.md", "type": "guide" },
+        { "id": "guide-custom-effects", "title": "Custom Glass Effects", "path": "guides/custom-effects.md", "type": "guide" },
+        { "id": "guide-backgrounds", "title": "Working with Backgrounds", "path": "guides/backgrounds.md", "type": "guide" },
+        { "id": "guide-images-video", "title": "Images & Video Backdrops", "path": "guides/images-and-video.md", "type": "guide" },
+        { "id": "guide-springs", "title": "Interaction & Motion", "path": "guides/interaction-springs.md", "type": "guide" },
+        { "id": "guide-responsive", "title": "Responsive Layouts", "path": "guides/responsive-layouts.md", "type": "guide" },
+        { "id": "guide-performance", "title": "Performance Optimization", "path": "guides/performance.md", "type": "guide" }
+      ]
+    },
+    {
+      "id": "advanced",
+      "title": "Advanced Architecture",
+      "items": [
+        { "id": "adv-pipeline", "title": "4-Pass Rendering Pipeline", "path": "advanced/pipeline.md", "type": "advanced" },
+        { "id": "adv-webgl2", "title": "WebGL2 Backend", "path": "advanced/webgl2.md", "type": "advanced" },
+        { "id": "adv-webgpu", "title": "WebGPU Backend", "path": "advanced/webgpu.md", "type": "advanced" },
+        { "id": "adv-fallback", "title": "CSS Fallback Architecture", "path": "advanced/css-fallback.md", "type": "advanced" },
+        { "id": "adv-sdf", "title": "SDF Shapes & Squircles", "path": "advanced/sdf-shapes.md", "type": "advanced" },
+        { "id": "adv-optics", "title": "Refraction & Optical Physics", "path": "advanced/optical-effects.md", "type": "advanced" },
+        { "id": "adv-blob-merge", "title": "Shape Merging Mechanics", "path": "advanced/shape-merging.md", "type": "advanced" },
+        { "id": "adv-engine", "title": "LiquidEngine Internals", "path": "advanced/engine.md", "type": "advanced" },
+        { "id": "adv-debugging", "title": "Diagnostics & Debugging", "path": "advanced/debugging.md", "type": "advanced" }
+      ]
+    },
+    {
+      "id": "reference",
+      "title": "API Reference",
+      "items": [
+        { "id": "ref-api", "title": "Public API Inventory", "path": "reference/api.md", "type": "reference" },
+        { "id": "ref-types", "title": "TypeScript Types", "path": "reference/types.md", "type": "reference" },
+        { "id": "ref-hooks", "title": "Hooks API", "path": "reference/hooks.md", "type": "reference" },
+        { "id": "ref-engine", "title": "Engine API", "path": "reference/engine.md", "type": "reference" },
+        { "id": "ref-utilities", "title": "Utilities & Helpers", "path": "reference/utilities.md", "type": "reference" }
+      ]
+    },
+    {
+      "id": "development",
+      "title": "Production & Contributing",
+      "items": [
+        { "id": "dev-troubleshooting", "title": "Troubleshooting & FAQ", "path": "development/troubleshooting.md", "type": "guide" },
+        { "id": "dev-accessibility", "title": "Accessibility Guide", "path": "development/accessibility.md", "type": "guide" },
+        { "id": "dev-browsers", "title": "Browser & Platform Support", "path": "development/browser-support.md", "type": "concept" },
+        { "id": "dev-contributing", "title": "Contributing Guide", "path": "development/contributing.md", "type": "guide" },
+        { "id": "dev-setup", "title": "Development Setup", "path": "development/setup.md", "type": "guide" },
+        { "id": "dev-maintenance", "title": "Documentation Maintenance", "path": "development/maintenance.md", "type": "guide" }
+      ]
+    }
+  ]
+}

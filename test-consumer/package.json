@@ -1,0 +1,23 @@
+{
+  "name": "test-consumer",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit && vite build"
+  },
+  "dependencies": {
+    "@react-spring/web": "^10.0.1",
+    "@sus_69/liquid-ui": "^0.1.0",
+    "liquid-ui": "file:../packages/liquid-ui/liquid-ui-0.1.0.tgz",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react-swc": "^3.9.0",
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5"
+  }
+}

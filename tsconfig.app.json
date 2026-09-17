@@ -28,7 +28,9 @@
     "baseUrl": ".",
     "paths": {
       "@": ["src"],
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "liquid-ui": ["packages/liquid-ui/src/index.ts"],
+      "@sus_69/liquid-ui": ["packages/liquid-ui/src/index.ts"]
     }
   },
   "include": ["src"]

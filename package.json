@@ -6,11 +6,18 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:lib": "pnpm --filter liquid-ui build",
+    "build:docs": "vite build --config vite.docs.config.ts",
+    "build:studio": "vite build --config vite.studio.config.ts",
+    "build:all": "pnpm build:lib && pnpm build && pnpm build:docs && pnpm build:studio",
+    "test": "pnpm --filter liquid-ui test",
+    "test:consumer": "cd test-consumer && npm run build",
+    "typecheck": "tsc -b && pnpm --filter liquid-ui typecheck",
+    "pack:lib": "cd packages/liquid-ui && npm pack",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
-    "liquid-ui": "workspace:*",
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^7.1.1",
     "@mui/material": "^7.1.1",
@@ -20,7 +27,8 @@
     "modern-normalize": "^3.0.1",
     "re-resizable": "^6.11.2",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "@sus_69/liquid-ui": "workspace:*"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

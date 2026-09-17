@@ -9,8 +9,11 @@ lerna-debug.log*
 
 node_modules
 dist
+dist-docs
+dist-studio
 dist-ssr
 *.local
+*.tgz
 
 # Editor directories and files
 .vscode/*
@@ -27,3 +30,7 @@ dist-ssr
 .claude/
 CLAUDE.md
 AGENTS.md
+
+# Test fixtures
+test-consumer/node_modules
+test-consumer/dist

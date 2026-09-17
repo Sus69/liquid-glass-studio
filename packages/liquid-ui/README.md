@@ -1,165 +1,151 @@
-# liquid-ui
+# 💧 liquid-ui
 
-Reusable liquid-glass UI components for React, powered by the rendering engine
-extracted from [Liquid Glass Studio](https://github.com/…).
+Reusable, accessible liquid-glass UI components for React, powered by a shared WebGL2 / WebGPU rendering engine.
 
 ```tsx
 import { LiquidButton } from 'liquid-ui';
+import 'liquid-ui/styles.css';
 
-<LiquidButton>Get Started</LiquidButton>
+<LiquidButton variant="primary">Get Started</LiquidButton>
 ```
 
-No canvas. No shaders. No renderer setup. The engine underneath does the GPU
-work (WebGPU when available, WebGL2 otherwise); your components stay real,
-accessible DOM.
+No raw canvas setup. No custom shaders to compile. The engine underneath handles all GPU optical physics (WebGPU when supported, WebGL2 otherwise, with graceful CSS fallback); your components remain 100% semantic, accessible HTML DOM elements.
 
 ---
 
-## Install
+## 📦 Installation
 
 ```bash
 npm install liquid-ui
-# peer deps: react >= 18, react-dom >= 18, @react-spring/web >= 9
 ```
 
-## Quick start
+### Peer Dependencies
+Ensure you have the following peer dependencies installed:
+```json
+{
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "@react-spring/web": ">=9.0.0"
+  }
+}
+```
 
-Wrap your app (or any subtree) once in `LiquidProvider`. It owns **one shared
-GPU canvas** that renders the glass material for every liquid component on the
-page.
+---
+
+## 🚀 Quick Start
+
+Wrap your application in `<LiquidProvider>` once near the root. It manages a **single shared GPU canvas** that renders refraction and specular lighting for every liquid component on the page.
 
 ```tsx
-import { LiquidProvider, LiquidCard, LiquidButton } from 'liquid-ui';
+import React from 'react';
+import {
+  LiquidProvider,
+  LiquidCard,
+  LiquidButton,
+  LiquidPill,
+} from 'liquid-ui';
+import 'liquid-ui/styles.css';
 
 export default function App() {
   return (
-    <LiquidProvider backdrop={{ mode: 'dom' }}>
-      <LiquidCard glass="frosted" radius={24}>
-        <h2>Hello</h2>
-        <LiquidButton variant="primary">Continue</LiquidButton>
-      </LiquidCard>
+    <LiquidProvider backdropMode="dom">
+      <div style={{ minHeight: '100vh', padding: 40 }}>
+        <LiquidCard glass="frosted" radius={24} interactive>
+          <LiquidPill statusColor="#10b981">Operational</LiquidPill>
+          <h2>Tactile Liquid Glass</h2>
+          <p>
+            Real-time physical refraction, chromatic dispersion, and
+            zero-re-render spring physics.
+          </p>
+          <LiquidButton variant="primary">Continue</LiquidButton>
+        </LiquidCard>
+      </div>
     </LiquidProvider>
   );
 }
 ```
 
-Then load the stylesheet once:
+---
 
-```ts
-import 'liquid-ui/styles.css';
-```
+## 🧩 Components
 
-## Components
+| Component | Underlying Element | Key Features |
+|---|---|---|
+| **`<LiquidSurface>`** | Polymorphic (`as="div\|button"`) | Core primitive backing all liquid components |
+| **`<LiquidDiv>`** | `<div>` | General glass container with squircle geometry |
+| **`<LiquidButton>`** | `<button type="button">` | Variants (`primary`, `secondary`, `ghost`), tactile press spring |
+| **`<LiquidCard>`** | `<div>` | Surface panel with optional `interactive` hover glare |
+| **`<LiquidPill>`** | `<span>` | Capsule badges and status chips (`radius={999}`) |
+| **`<LiquidInput>`** | `<input>` | Accessible form control on a liquid glass base |
+| **`<LiquidIconButton>`** | `<button>` | Icon container with compile-time mandatory `'aria-label'` |
+| **`<LiquidToggle>`** | `<button role="switch">` | Accessible switch with spring-driven indicator thumb |
+| **`<LiquidTooltip>`** | Portal + `role="tooltip"` | Floating glass tooltip positioned relative to trigger |
+| **`<LiquidModal>`** | Accessible Dialog | Overlay dimming, Tab/Shift+Tab focus trap, Escape key close |
+| **`<LiquidDock>`** | Container + Items | macOS-style magnification dock bar with spring physics |
+| **`<LiquidBlob>`** | SVG/DOM Container | Organic metaball merging using polynomial smooth-minimum SDF |
 
-| Component | Element | Notes |
-| --- | --- | --- |
-| `LiquidDiv` | `<div>` | General glass container; the base primitive |
-| `LiquidButton` | `<button>` | Variants `primary/secondary/ghost`, sizes, `loading`, `disabled` |
-| `LiquidCard` | `<div>` | `interactive` for pointer-following motion |
-| `LiquidPill` | `<span>` | Tags, statuses, filters |
-| `LiquidInput` | `<input>` | Real text input with a glass surround |
-| `LiquidIconButton` | `<button>` | Requires `aria-label` |
-| `LiquidToggle` | `<button role="switch">` | Spring-based thumb |
-| `LiquidTooltip` | portal + `role="tooltip"` | Wraps any trigger |
-| `LiquidModal` | accessible dialog | Focus trap, `Esc` to close |
-| `LiquidDock` + `LiquidDockItem` | `<nav>` + items | Pointer-proximity magnification |
-| `LiquidBlob` | decorative layer | The Studio's SDF `smin` merging, as a primitive |
+---
 
-`LiquidSurface` is the lower-level primitive all of the above are built on —
-use it directly for custom shapes.
+## 🎨 Material Presets & Overrides
 
-## Materials
-
-Every component accepts `glass` as a preset name or a partial override:
+Every component accepts the `glass` prop as either a preset string or a partial parameter override:
 
 ```tsx
-<LiquidCard glass="soft" />
-<LiquidCard glass="dark" />
+// Using a built-in preset
+<LiquidCard glass="frosted" />
 
-<LiquidDiv
-  glass={{ blur: 18, refraction: 0.8, dispersion: 0.2, glare: 0.3, thickness: 20 }}
+// Using a partial override
+<LiquidButton
+  glass={{
+    refractiveIndex: 1.45,
+    blur: 24,
+    dispersion: 1.5,
+    tint: [1, 1, 1],
+    tintOpacity: 0.15,
+  }}
 >
-  Content
-</LiquidDiv>
+  Custom Glass Button
+</LiquidButton>
 ```
 
-Presets: `soft`, `clear`, `frosted`, `dark`, `strong` (the Studio defaults).
+### Built-in Presets
+- **`soft`** (Default): Ambient, velvety glass with balanced diffusion and gentle edge refraction.
+- **`clear`**: Pure transparent crystal with zero blur and vivid chromatic dispersion.
+- **`frosted`**: Dense diffusion acrylic for high text legibility on arbitrary backdrops.
+- **`dark`**: Smoked obsidian for dark-mode interfaces and stealth HUDs.
+- **`strong`**: Intense light bending and rainbow dispersion for hero call-to-action buttons.
 
-The full `LiquidMaterial` maps 1:1 onto the original Studio shader uniforms —
-`thickness` → `u_refThickness`, `dispersion` → `u_refDispersion`,
-`fresnel` → `u_refFresnelFactor`, `glare` → `u_glareFactor`, and so on. Advanced
-users can import `LIQUID_PRESETS`, `resolveMaterial` and
-`materialToShapeUniforms` for full control; basic usage never needs them.
+---
 
-## Backdrop modes
+## 🖼 Backdrop Modes
 
-`LiquidProvider` decides how the glass obtains the pixels behind it:
+Configure `<LiquidProvider backdropMode="...">`:
 
-- **`dom`** *(default)* — one transparent GPU canvas overlays the page. The
-  engine draws shape edges, refraction rims, Fresnel, glare, tint and shadows
-  with per-pixel alpha (premultiplied compositing); the interior blur of real
-  page content comes from `backdrop-filter` on the component. Best for normal
-  app UI over any DOM content.
-- **`textured`** — full Studio fidelity. The backdrop (image, video, canvas) is
-  uploaded as a GPU texture and the complete 4-pass pipeline — background +
-  separable Gaussian blur, refraction, dispersion, LCH glare — runs against it.
-  Use for hero surfaces over known imagery.
-- **`css`** — no GPU. Pure `backdrop-filter`/box-shadow approximation;
-  automatic fallback when WebGPU **and** WebGL2 are both unavailable.
+- **`"dom"`** *(Default)*: The GPU canvas sits underneath your HTML layout, drawing specular glares and refraction rims while delegating interior diffusion blur to CSS `backdrop-filter`. Best for standard web applications.
+- **`"textured"`**: Full GPU texture sampling. Uploads a static image or 60fps video directly into a GPU texture buffer for true Snell's law refraction.
+- **`"css"`**: Universal graceful fallback for headless browsers, SSR, or systems where WebGPU/WebGL2 are unavailable.
 
-Selection is automatic (`WebGPU → WebGL2 → CSS`) unless you pin it:
+---
 
-```tsx
-<LiquidProvider backend="webgl" backdrop={{ mode: 'textured', source: photoUrl }}>
-```
+## ⚡ Performance Guarantees
 
-## Performance
+- **Single Shared Canvas**: Up to 48 shapes share a single GPU draw call and buffer allocation.
+- **Render-on-Demand Loop**: Automatically sleeps when shapes and springs settle, consuming **0% continuous GPU cycles** on static pages.
+- **Intersection Culling**: Components scrolled out of view are culled 120px before leaving the screen.
+- **DPR Throttling**: Caps mobile drawing buffer density at `maxDpr={2}` by default.
 
-- **One renderer per page**, not per component — 29 surfaces share a single
-  canvas and pipeline.
-- **Render-on-demand** — the loop skips GPU submission when nothing is dirty or
-  in motion; static pages cost one cheap check per frame.
-- **Blur batching** — shapes with similar blur radii share one blur pass
-  (`blurGroupKey` quantizes upward so nothing under-blurs).
-- **Capped DPR**, resolution-scaled canvas, visibility-based unregistration
-  (offscreen shapes stop rendering), and full disposal on unmount.
+---
 
-## Accessibility & motion
+## ♿ Accessibility
 
-Components render semantic DOM (`<button>`, `<input>`, `role="switch"`,
-focus-trapped dialogs). The GPU canvas is `aria-hidden` and `pointer-events:
-none`. `prefers-reduced-motion` disables hover/press spring animation.
+- Canvas is isolated with `aria-hidden="true"` and `pointer-events: none`.
+- Screen readers interact exclusively with semantic HTML elements (`<button>`, `<input>`, `role="switch"`, `role="dialog"`).
+- Full keyboard focus trap and Escape dismissal in `<LiquidModal>`.
+- Automatically respects `prefers-reduced-motion: reduce`.
 
-## TypeScript
+---
 
-The public API is fully typed — `LiquidMaterial`, `LiquidPresetName`,
-`LiquidBackdropMode`, `LiquidInteraction`, per-component props — with no `any`
-in the exported surface. Types ship with the package.
+## 📄 License
 
-## Development
-
-This package lives in the `liquid-glass-studio` pnpm workspace:
-
-```bash
-pnpm install
-npx pnpm --filter liquid-ui test        # vitest unit tests
-npx pnpm --filter liquid-ui typecheck   # tsc --noEmit
-npx pnpm --filter liquid-ui build       # ESM + CJS + d.ts into dist/
-npx pnpm dev                            # Studio (engine playground)
-# Showcase page (exercises every component through the library):
-npx pnpm exec vite --open /showcase.html
-```
-
-The original **Studio** app is preserved as the engine's debug playground: its
-Leva controls drive the same engine the components use.
-
-## Full documentation
-
-Complete API reference — architecture diagram, every component prop, the full
-material→uniform mapping, backdrop modes, performance model, engine internals,
-and gotchas — lives in [`docs/API.md`](docs/API.md).
-
-## Credits
-
-Rendering technology (SDF shapes, refraction, dispersion, Fresnel, glare,
-multipass compositing) from Liquid Glass Studio.
+[MIT License](LICENSE)

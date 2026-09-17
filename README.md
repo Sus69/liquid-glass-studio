@@ -1,109 +1,106 @@
-# 🔮 Liquid Glass Studio
+# 🔮 Liquid Glass Studio & Liquid UI
 
 ![frontPhoto](./.github/assets/title.png)
 
 [English](README.md) | [简体中文](README-zh.md) | [O‘zbekcha](README-uz.md)
 
-The Ultimate Web Recreation of Apple’s Liquid Glass UI, powered by WebGL2 & WebGPU. Includes most Liquid Glass features with fine-grained controls for detailed customization.
+The Ultimate Web Recreation of Apple’s Liquid Glass UI, powered by WebGL2 & WebGPU. Includes both an interactive shader playground (**Liquid Glass Studio**) and a reusable React component library (**`liquid-ui`**).
 
-## Online Demo
+---
 
-https://liquid-glass-studio.vercel.app/
+## 📦 Packages & Applications
 
-For users in mainland China, please visit:  
-https://liquid-glass.iyinchao.cn/
+This repository is organized as a pnpm workspace containing:
 
-## ScreenShots
+- **[`packages/liquid-ui`](./packages/liquid-ui)**: Reusable liquid-glass React component library (`<LiquidButton>`, `<LiquidCard>`, `<LiquidModal>`, etc.) powered by a shared hardware-accelerated WebGL2/WebGPU engine.
+- **[Liquid Glass Studio](./src)**: Interactive real-time shader laboratory for fine-tuning optical parameters, lighting, and backgrounds with Leva controls.
+- **[Documentation Portal](./docs)**: Comprehensive documentation website (58 pages) with guides, component references, and architectural deep-dives.
+- **[Prism Music App Demo](./mock.html)**: Production reference application exhibiting glass layering and responsive compositing.
 
-<table align="center">
-  <tr>
-    <td><img src="./.github/assets/title-video.gif" width="240" ></td>
-    <td><img src="./.github/assets/screen-shot-1.png" width="240" /></td>
-    <td><img src="./.github/assets/screen-shot-2.png" width="240" /></td>
-  </tr>
-  <tr>
-    <td><img src="./.github/assets/screen-shot-3.png" width="240" /></td>
-    <td><img src="./.github/assets/screen-shot-4.png" width="240" /></td>
-  </tr>
-</table>
+---
 
-## Features
+## 🚀 Quick Start with `liquid-ui`
 
-**✨ Apple Liquid Glass Effects:**
-
-- Refraction
-- Dispersion
-- Fresnel reflection
-- Superellipse shapes
-- Blob effect (shape merging)
-- Glare with customizable angle
-- Gaussian blur masking
-- Anti-aliasing
-
-**⚙️ Interactive Controls:**
-
-- Comprehensive real-time parameter adjustments via an intuitive UI
-
-**🖼 Background Options:**
-
-- Support for both images and videos as dynamic backgrounds
-
-**🎞 Animation Support:**
-
-- Spring-based shape animations with configurable behavior
-
-## Technical Highlights
-
-- WebGL2 / WebGPU dual-backend rendering for high-performance graphics
-- Multipass rendering for high-quality & performant Gaussian blur
-- Using SDF Defined shapes and smooth merge function
-- Custom shader implementations for realistic glass effects
-- Custom Leva UI components for intuitive parameter controls
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js (latest LTS version recommended)
-- pnpm package manager
-
-### Installation
+### 1. Installation
 
 ```bash
-# Install dependencies
-pnpm install
-
-# Start development server
-pnpm dev
-
-# Build for production
-pnpm build
+npm install liquid-ui
+# Peer dependencies: react >= 18, react-dom >= 18, @react-spring/web >= 9
 ```
 
-## TODO
+### 2. Usage
 
-- [x] More Glare Controls (hardness / color / size etc.)
-- [x] Custom Background
-- [x] Render with WebGPU
-- [ ] Editor mode
-- [ ] Glass Text Rendering
-- [ ] Glass Presets
-- [ ] Self-illumination
-- [ ] HDR illumination
-- [x] Control parameter import / export
-- [x] Render Step view to show intermediate results
-- [ ] UI Content inside of shape
+Wrap your application in `<LiquidProvider>` and import the stylesheet:
 
-## Credits
+```tsx
+import React from 'react';
+import { LiquidProvider, LiquidCard, LiquidButton, LiquidPill } from 'liquid-ui';
+import 'liquid-ui/styles.css';
 
-Thanks to the following resources and inspirations:
+export default function App() {
+  return (
+    <LiquidProvider backdropMode="dom">
+      <div style={{ padding: 40 }}>
+        <LiquidCard glass="frosted" radius={24} interactive>
+          <LiquidPill statusColor="#10b981">Operational</LiquidPill>
+          <h2>Liquid Glass UI</h2>
+          <p>Real-time physical refraction with zero-re-render spring physics.</p>
+          <LiquidButton variant="primary">Get Started</LiquidButton>
+        </LiquidCard>
+      </div>
+    </LiquidProvider>
+  );
+}
+```
 
-- [SDF functions](https://iquilezles.org/articles/distfunctions2d/) and [smooth merge function](https://iquilezles.org/articles/smin/) by [Inigo Quilez](https://iquilezles.org/)
-- Sample photo (Buildings) by <a href="https://unsplash.com/@anewevisual?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Adrian Newell</a> on <a href="https://unsplash.com/photos/a-row-of-multicolored-houses-on-a-street-UtfxJZ-uy5Q?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>
-- Sample video (Fish / Traffic) by Tom Fisk from [Pexels](https://www.pexels.com/video/light-city-road-traffic-4062991/)
-- Sample video (Flower) by Pixabay from [Pexels](https://www.pexels.com/video/orange-flowers-856383/)
-- Sample Photo by Apple and Tim Cook
+---
 
-## License
+## 🛠 Monorepo Development
+
+### Prerequisites
+- Node.js (>= 18.0.0, 20+ recommended)
+- pnpm (>= 9.0.0)
+
+### Commands
+
+```bash
+# Install workspace dependencies
+pnpm install
+
+# Start local dev server (serves Studio, Docs, Showcase, and Prism Mock)
+pnpm dev
+
+# Build the liquid-ui library (dist/index.mjs, dist/index.cjs, dist/types)
+pnpm build:lib
+
+# Build the standalone Documentation Portal (dist-docs/)
+pnpm build:docs
+
+# Build the standalone Liquid Glass Studio (dist-studio/)
+pnpm build:studio
+
+# Run all test suites
+pnpm test
+
+# Run consumer test fixture
+pnpm test:consumer
+
+# Typecheck workspace and library
+pnpm typecheck
+```
+
+---
+
+## 🌐 Deployments
+
+Detailed deployment instructions for Vercel, Cloudflare, and npm are available in **[`DEPLOYMENT.md`](./DEPLOYMENT.md)**.
+
+- **Documentation Portal**: Deploys via `pnpm build:docs` (Output: `dist-docs/`)
+- **Liquid Glass Studio**: Deploys via `pnpm build:studio` (Output: `dist-studio/`)
+- **Unified Site**: Deploys via `pnpm build` (Output: `dist/`)
+
+---
+
+## 📄 License
 
 [MIT License](LICENSE)
