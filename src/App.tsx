@@ -8,19 +8,19 @@ import {
   type CSSProperties,
 } from 'react';
 import styles from './App.module.scss';
+// Renderers moved to the liquid-ui engine package; the Studio consumes them
+// through the workspace dependency — same classes, now shared infrastructure.
 import {
+  MultiPassRenderer,
+  GPUMultiPassRenderer,
   createEmptyTexture,
   loadTextureFromURL,
-  MultiPassRenderer,
   updateVideoTexture,
-} from './utils/GLUtils';
-import type { IMultiPassRenderer, ITextureHandle } from './utils/RendererInterface';
-import {
-  GPUMultiPassRenderer,
   gpuLoadTextureFromURL,
   gpuCreateEmptyTexture,
   gpuUpdateVideoTexture,
-} from './utils/GPUUtils';
+} from 'liquid-ui';
+import type { IMultiPassRenderer, ITextureHandle } from './utils/RendererInterface';
 import { detectWebGPU, type WebGPUDetectResult } from './utils/gpuDetect';
 import { ResizableWindow } from './components/ResizableWindow';
 import type { ResizeWindowCtrlRefType } from './components/ResizableWindow/ResizableWindow';

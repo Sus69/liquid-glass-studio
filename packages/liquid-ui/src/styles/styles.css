@@ -1,0 +1,231 @@
+/* liquid-ui base styles */
+
+.liquid-ui-root {
+  position: relative;
+  --liquid-ui-color: inherit;
+  --liquid-ui-placeholder-color: color-mix(in srgb, currentColor 45%, transparent);
+}
+
+.liquid-ui-engine-canvas {
+  display: block;
+  pointer-events: none;
+}
+
+/* Glass DOM layer: transparent so the GPU canvas behind shows through;
+   backdrop-filter provides the interior blur of *real* page content in
+   DOM mode (the GPU canvas renders shape, edges, lighting and glare). */
+.liquid-ui-surface {
+  background: transparent;
+  border: none;
+  -webkit-backdrop-filter: blur(2px) saturate(1.3);
+  backdrop-filter: blur(2px) saturate(1.3);
+}
+
+/* Pure-CSS fallback (no GPU available): stronger fill + shadows. */
+.liquid-ui-fallback {
+  background: rgba(255, 255, 255, 0.18);
+  -webkit-backdrop-filter: blur(12px) saturate(1.5);
+  backdrop-filter: blur(12px) saturate(1.5);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35),
+    inset 0 1.5px 0 0 rgba(255, 255, 255, 0.5),
+    0 8px 28px rgba(0, 0, 0, 0.18);
+}
+
+/* Respect reduced motion for any CSS-driven transitions. */
+@media (prefers-reduced-motion: reduce) {
+  .liquid-ui-surface,
+  .liquid-ui-fallback {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ---------- Component defaults ---------- */
+
+.liquid-ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--liquid-ui-color, inherit);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  touch-action: manipulation;
+  transition: filter 160ms ease;
+}
+
+.liquid-ui-button:hover:not([data-disabled='true']) {
+  filter: brightness(1.06);
+}
+
+.liquid-ui-button:focus-visible {
+  outline: 2px solid rgba(90, 150, 255, 0.85);
+  outline-offset: 3px;
+}
+
+.liquid-ui-button[data-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.liquid-ui-button--primary {
+  color: #ffffff;
+}
+
+.liquid-ui-button--secondary {
+  color: var(--liquid-ui-color, inherit);
+}
+
+.liquid-ui-button--ghost {
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.liquid-ui-button--sm { padding: 6px 14px; font-size: 13px; }
+.liquid-ui-button--md { padding: 10px 20px; font-size: 15px; }
+.liquid-ui-button--lg { padding: 14px 28px; font-size: 17px; }
+
+.liquid-ui-card {
+  padding: 20px;
+  color: inherit;
+}
+
+.liquid-ui-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--liquid-ui-color, inherit);
+  white-space: nowrap;
+}
+
+.liquid-ui-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--liquid-ui-color, inherit);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.liquid-ui-icon-button:focus-visible,
+.liquid-ui-input:focus-visible,
+.liquid-ui-toggle:focus-visible,
+.liquid-ui-dock-item:focus-visible {
+  outline: 2px solid rgba(90, 150, 255, 0.85);
+  outline-offset: 2px;
+}
+
+.liquid-ui-input {
+  font: inherit;
+  color: var(--liquid-ui-color, inherit);
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+}
+
+.liquid-ui-input::placeholder {
+  color: var(--liquid-ui-placeholder-color, color-mix(in srgb, currentColor 45%, transparent));
+}
+
+.liquid-ui-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+
+.liquid-ui-toggle__thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+}
+
+.liquid-ui-toggle[data-checked='true'] .liquid-ui-toggle__thumb {
+  transform: translateX(24px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liquid-ui-toggle__thumb {
+    transition: none;
+  }
+}
+
+.liquid-ui-tooltip {
+  position: fixed;
+  z-index: 1000;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.liquid-ui-modal__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 12, 18, 0.35);
+}
+
+.liquid-ui-modal__panel {
+  min-width: 320px;
+  max-width: min(92vw, 560px);
+  max-height: 84vh;
+  overflow: auto;
+  padding: 24px;
+}
+
+.liquid-ui-dock {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 10px 14px;
+}
+
+.liquid-ui-dock-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  height: 56px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--liquid-ui-color, inherit);
+  transition: transform 180ms cubic-bezier(0.34, 1.3, 0.64, 1);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liquid-ui-dock-item {
+    transition: none;
+  }
+}
+
+.liquid-ui-blob {
+  pointer-events: none;
+}
