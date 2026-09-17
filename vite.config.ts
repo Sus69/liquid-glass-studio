@@ -13,6 +13,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: 'index.html',
+        studio: 'studio.html',
         showcase: 'showcase.html',
         mock: 'mock.html',
         docs: 'docs.html',
@@ -27,5 +28,19 @@ export default defineConfig({
       warnDuplicatedImports: true,
       removeDuplicatedImports: true,
     }),
+    {
+      name: 'dev-clean-urls',
+      configureServer(server) {
+        server.middlewares.use((req: any, _res: any, next: () => void) => {
+          if (!req.url) return next();
+          const cleanUrl = req.url.split('?')[0].split('#')[0];
+          if (cleanUrl === '/studio') req.url = req.url.replace('/studio', '/studio.html');
+          else if (cleanUrl === '/showcase') req.url = req.url.replace('/showcase', '/showcase.html');
+          else if (cleanUrl === '/mock') req.url = req.url.replace('/mock', '/mock.html');
+          else if (cleanUrl === '/docs') req.url = req.url.replace('/docs', '/index.html');
+          next();
+        });
+      },
+    },
   ],
 });

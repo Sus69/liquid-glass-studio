@@ -16,10 +16,10 @@ export default defineConfig({
       removeDuplicatedImports: true,
     }),
     {
-      name: 'copy-docs-to-index',
+      name: 'copy-index-to-docs',
       closeBundle() {
-        const src = path.resolve('dist-docs/docs.html');
-        const dest = path.resolve('dist-docs/index.html');
+        const src = path.resolve('dist-docs/index.html');
+        const dest = path.resolve('dist-docs/docs.html');
         if (fs.existsSync(src)) {
           fs.copyFileSync(src, dest);
         }
@@ -31,7 +31,7 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        docs: 'docs.html',
+        index: 'index.html',
       },
     },
   },

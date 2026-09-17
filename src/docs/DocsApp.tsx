@@ -53,22 +53,36 @@ export function DocsApp() {
         </div>
 
         <nav className="docs-nav-links">
-          <a href="/showcase.html" className="docs-nav-link" target="_blank" rel="noreferrer">
-            Showcase ↗
+          <a href="/studio.html" className="docs-nav-pill docs-nav-pill-studio" title="Interactive Shader & Physics Studio">
+            <span className="docs-nav-icon">🎛️</span>
+            <span className="docs-nav-label">Liquid Studio</span>
           </a>
-          <a href="/mock.html" className="docs-nav-link" target="_blank" rel="noreferrer">
-            Prism Mock ↗
+          <a href="/showcase.html" className="docs-nav-pill docs-nav-pill-showcase" title="Interactive Component Catalog">
+            <span className="docs-nav-icon">🧩</span>
+            <span className="docs-nav-label">UI Showcase</span>
           </a>
-          <a href="/" className="docs-nav-link" target="_blank" rel="noreferrer">
-            Studio Lab ↗
+          <a href="/mock.html" className="docs-nav-pill docs-nav-pill-mock" title="Prism Glass Music Player Demo">
+            <span className="docs-nav-icon">🎵</span>
+            <span className="docs-nav-label">Mock UI</span>
+          </a>
+          <span className="docs-nav-separator" />
+          <a
+            href="https://www.npmjs.com/package/@sus_69/liquid-ui"
+            className="docs-nav-link docs-nav-ext"
+            target="_blank"
+            rel="noreferrer"
+            title="View on npm"
+          >
+            <span>npm</span> <span className="docs-nav-arrow">↗</span>
           </a>
           <a
             href="https://github.com/Sus69/liquid-glass-studio"
-            className="docs-nav-link"
+            className="docs-nav-link docs-nav-ext"
             target="_blank"
             rel="noreferrer"
+            title="GitHub Repository"
           >
-            GitHub ↗
+            <span>GitHub</span> <span className="docs-nav-arrow">↗</span>
           </a>
         </nav>
       </header>
