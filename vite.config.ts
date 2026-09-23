@@ -17,6 +17,9 @@ export default defineConfig({
         showcase: 'showcase.html',
         mock: 'mock.html',
         docs: 'docs.html',
+        step1: 'test-step1-single-shape.html',
+        step2: 'test-step2-merged-shapes.html',
+        step3: 'test-step3-layers.html',
       },
     },
   },
@@ -38,6 +41,9 @@ export default defineConfig({
           else if (cleanUrl === '/showcase') req.url = req.url.replace('/showcase', '/showcase.html');
           else if (cleanUrl === '/mock') req.url = req.url.replace('/mock', '/mock.html');
           else if (cleanUrl === '/docs') req.url = req.url.replace('/docs', '/index.html');
+          else if (cleanUrl === '/step1') req.url = req.url.replace('/step1', '/test-step1-single-shape.html');
+          else if (cleanUrl === '/step2') req.url = req.url.replace('/step2', '/test-step2-merged-shapes.html');
+          else if (cleanUrl === '/step3') req.url = req.url.replace('/step3', '/test-step3-layers.html');
           next();
         });
       },

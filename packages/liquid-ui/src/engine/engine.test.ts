@@ -114,6 +114,36 @@ describe('ShapeRegistry', () => {
     });
     expect(reg.isDirty()).toBe(true);
   });
+
+  it('partitions shapes by layer into activeLayers and per-layer packs', () => {
+    const reg = new ShapeRegistry();
+    const id0 = reg.register(material, 0);
+    const id1 = reg.register(material, 1);
+    const id2 = reg.register(material, 1);
+
+    reg.update(id0, {
+      x: 10, y: 10, halfWidth: 20, halfHeight: 20, radius: 5, roundness: 5,
+      material, scale: 1, offsetX: 0, offsetY: 0, layer: 0,
+    });
+    reg.update(id1, {
+      x: 50, y: 50, halfWidth: 15, halfHeight: 15, radius: 5, roundness: 5,
+      material, scale: 1, offsetX: 0, offsetY: 0, layer: 1,
+    });
+    reg.update(id2, {
+      x: 80, y: 80, halfWidth: 15, halfHeight: 15, radius: 5, roundness: 5,
+      material, scale: 1, offsetX: 0, offsetY: 0, layer: 1,
+    });
+
+    reg.pack();
+
+    expect(reg.getActiveLayers()).toEqual([0, 1]);
+    expect(reg.getPackedLayer(0).count).toBe(1);
+    expect(reg.getPackedLayer(0).shapesA[0]).toBe(10);
+    expect(reg.getPackedLayer(1).count).toBe(2);
+    expect(reg.getPackedLayer(1).shapesA[0]).toBe(50);
+    expect(reg.getPackedLayer(1).shapesA[4]).toBe(80);
+    expect(reg.packed.count).toBe(3);
+  });
 });
 
 describe('ScalarSpring', () => {

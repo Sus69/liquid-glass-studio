@@ -54,7 +54,7 @@ fn getNormal(p: vec2f) -> vec2f {
     mainSDF(p + vec2f(h.x, 0.0)) - mainSDF(p - vec2f(h.x, 0.0)),
     mainSDF(p + vec2f(0.0, h.y)) - mainSDF(p - vec2f(0.0, h.y))
   ) / (2.0 * h);
-  return grad * 1.414213562 * 1000.0;
+  return grad * 1.414213562 * u.u_resolution.y;
 }
 
 // SDF gradient via central differences over the active shape's boundary.
@@ -64,7 +64,7 @@ fn getShapeNormal(pixel: vec2f, i: i32) -> vec2f {
     shapeSDFAt(pixel + vec2f(h.x, 0.0), i) - shapeSDFAt(pixel - vec2f(h.x, 0.0), i),
     shapeSDFAt(pixel + vec2f(0.0, h.y), i) - shapeSDFAt(pixel - vec2f(0.0, h.y), i)
   ) / (2.0 * h);
-  return grad * 1.414213562 * 1000.0;
+  return grad * 1.414213562 * u.u_resolution.y;
 }
 
 // Safe normalize: returns zero vector instead of NaN when length is near zero
@@ -142,7 +142,8 @@ fn fs_main(@builtin(position) frag_coord: vec4f, @location(0) v_uv: vec2f) -> @l
       outColor = mix(outColor, vec4f(tint.r, tint.g, tint.b, 1.0), tint.a * 0.8);
     } else {
       let edgeH = nmerged / thickness;
-      let normal = getShapeNormal(pixel, si);
+      let isBlob = u.u_shapeM3[si].w > 0.001;
+      let normal = select(getShapeNormal(pixel, si), getNormal(pixel), isBlob);
 
       var blurMixRate: f32;
       if (blurEdge > 0.5) {

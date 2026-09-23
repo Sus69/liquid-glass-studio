@@ -383,10 +383,16 @@ export class RenderPass {
     this.config = config;
   }
 
-  public render(uniforms?: Record<string, unknown>): void {
+  public render(uniforms?: Record<string, unknown>, targetFrameBuffer?: FrameBuffer | null): void {
     const gl = this.gl;
 
-    if (this.frameBuffer) {
+    if (targetFrameBuffer !== undefined) {
+      if (targetFrameBuffer) {
+        targetFrameBuffer.bind();
+      } else {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      }
+    } else if (this.frameBuffer) {
       this.frameBuffer.bind();
     } else {
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -412,7 +418,11 @@ export class RenderPass {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     gl.bindVertexArray(null);
 
-    if (this.frameBuffer) {
+    if (targetFrameBuffer !== undefined) {
+      if (targetFrameBuffer) {
+        targetFrameBuffer.unbind();
+      }
+    } else if (this.frameBuffer) {
       this.frameBuffer.unbind();
     }
   }
@@ -492,9 +502,51 @@ export class MultiPassRenderer {
     }
   }
 
+  private layerFrameBuffers: FrameBuffer[] = [];
+
+  public getPass(name: string): RenderPass | undefined {
+    return this.passes.get(name);
+  }
+
+  public getOrCreateLayerFrameBuffer(index: number): FrameBuffer {
+    while (this.layerFrameBuffers.length <= index) {
+      const fb = new FrameBuffer(this.gl, this.gl.canvas.width, this.gl.canvas.height);
+      this.layerFrameBuffers.push(fb);
+    }
+    return this.layerFrameBuffers[index];
+  }
+
+  public renderPass(
+    name: string,
+    uniforms?: Record<string, unknown>,
+    targetFrameBuffer?: FrameBuffer | null,
+  ): void {
+    const pass = this.passes.get(name);
+    if (!pass) return;
+
+    const mergedUniforms: Record<string, unknown> = { ...this.globalUniforms };
+    if (uniforms) {
+      Object.assign(mergedUniforms, uniforms);
+    }
+
+    if (pass.config.inputs) {
+      Object.entries(pass.config.inputs).forEach(([uniformName, fromPassName]) => {
+        if (mergedUniforms[uniformName] === undefined) {
+          const fromPass = this.passes.get(fromPassName);
+          mergedUniforms[uniformName] = fromPass?.getOutputTexture();
+        }
+      });
+    }
+
+    pass.render(mergedUniforms, targetFrameBuffer);
+  }
+
   public resize(width: number, height: number): void {
     this.passesArray.forEach((pass) => {
       pass.resize(width, height);
+    });
+    this.layerFrameBuffers.forEach((fb) => {
+      fb.resize(width, height);
     });
   }
 
@@ -541,6 +593,11 @@ export class MultiPassRenderer {
 
   public dispose(): void {
     const gl = this.gl;
+
+    this.layerFrameBuffers.forEach((fb) => {
+      fb.dispose();
+    });
+    this.layerFrameBuffers = [];
 
     this.passes.forEach((pass) => {
       pass.dispose();

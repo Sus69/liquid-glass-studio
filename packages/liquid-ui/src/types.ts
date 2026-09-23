@@ -70,6 +70,8 @@ export interface LiquidMaterial {
   radius: number;
   /** Superellipse roundness (2=ellipse, 5≈iOS squircle) → u_shapeRoundness. */
   roundness: number;
+  /** Optical depth layer (0 = background/card, 1 = controls/buttons, 2 = modals). Defaults to 0. */
+  layer?: number;
 }
 
 /** All material fields are optional when overriding a preset. */
@@ -122,6 +124,8 @@ export interface LiquidComponentProps {
   style?: React.CSSProperties;
   /** Ref forwarded to the underlying DOM element. */
   children?: React.ReactNode;
+  /** Optical depth layer index (0 = background/card, 1 = controls, 2 = modals/tooltips). Defaults to 0 or auto-derived. */
+  layer?: number;
 }
 
 /** Shape description sent from a component to the engine each frame. */
@@ -146,6 +150,8 @@ export interface LiquidShapeState {
   offsetX: number;
   /** Pointer-following offset in px (y). */
   offsetY: number;
+  /** Optical depth layer index for multi-pass rendering. */
+  layer?: number;
 }
 
 /** Which GPU backend the engine selected. */

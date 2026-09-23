@@ -31,7 +31,7 @@ vec2 getNormal(vec2 p) {
     ) /
     (2.0 * h);
 
-  return grad * 1.414213562 * 1000.0;
+  return grad * 1.414213562 * u_resolution.y;
 }
 
 // SDF gradient via central differences over the active shape's boundary.
@@ -45,7 +45,7 @@ vec2 getShapeNormal(vec2 p, int i) {
     ) /
     (2.0 * h);
 
-  return grad * 1.414213562 * 1000.0;
+  return grad * 1.414213562 * u_resolution.y;
 }
 
 float vec2ToAngle(vec2 v) {
@@ -127,7 +127,8 @@ void main() {
     } else {
       // height of glass edge
       float edgeH = nmerged / thickness;
-      vec2 normal = getShapeNormal(gl_FragCoord.xy, si);
+      bool isBlob = u_shapeM3[si].w > 0.001;
+      vec2 normal = isBlob ? getNormal(gl_FragCoord.xy) : getShapeNormal(gl_FragCoord.xy, si);
 
       vec4 blurredPixel = getTextureDispersion(
         si,

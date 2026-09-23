@@ -1,8 +1,8 @@
 import { forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react';
-import type { LiquidGlassInput, LiquidInteraction } from '../types';
+import type { LiquidComponentProps, LiquidGlassInput, LiquidInteraction } from '../types';
 import { LiquidSurface } from './LiquidSurface';
 
-export interface LiquidCardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'style'> {
+export interface LiquidCardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'style'>, LiquidComponentProps {
   children?: ReactNode;
   glass?: LiquidGlassInput;
   radius?: number;
@@ -11,6 +11,7 @@ export interface LiquidCardProps extends Omit<HTMLAttributes<HTMLDivElement>, 's
   interaction?: LiquidInteraction;
   className?: string;
   style?: CSSProperties;
+  layer?: number;
 }
 
 /**

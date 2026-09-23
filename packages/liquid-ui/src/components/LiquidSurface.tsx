@@ -36,6 +36,8 @@ export interface LiquidSurfaceProps
   role?: React.AriaRole;
   /** For as="button": the button type. */
   type?: 'button' | 'submit' | 'reset';
+  /** Optical depth layer index (0 = background/card, 1 = controls, 2 = modals). */
+  layer?: number;
   /** Called with pointer position for glare/magnetism, normalized to [-1, 1]. */
   onPointerNorm?: (x: number, y: number, active: boolean) => void;
   /** Extra data attributes forwarded to the DOM element. */
@@ -70,6 +72,7 @@ export const LiquidSurface = forwardRef<HTMLElement, LiquidSurfaceProps>(
       disabled,
       pressDepth = 0.06,
       onPointerNorm,
+      layer,
       ...dataAttrs
     },
     forwardedRef,
@@ -82,6 +85,16 @@ export const LiquidSurface = forwardRef<HTMLElement, LiquidSurfaceProps>(
       if (radius != null) m.radius = radius;
       return m;
     }, [glass, radius]);
+
+    const resolvedLayer = useMemo(() => {
+      if (layer != null) return layer;
+      if (typeof style?.zIndex === 'number') return style.zIndex;
+      if (typeof style?.zIndex === 'string') {
+        const parsed = parseInt(style.zIndex, 10);
+        if (!isNaN(parsed)) return parsed;
+      }
+      return material.layer ?? 0;
+    }, [layer, style?.zIndex, material.layer]);
 
     const localRef = useRef<HTMLElement | null>(null);
     const setRef = useCallback(
@@ -104,14 +117,14 @@ export const LiquidSurface = forwardRef<HTMLElement, LiquidSurfaceProps>(
     // Register with the engine when it's ready.
     useEffect(() => {
       if (!engine || !ready) return;
-      const id = engine.registry.register(material);
+      const id = engine.registry.register(material, resolvedLayer);
       shapeIdRef.current = id;
       if (localRef.current) engine.registry.setElement(id, localRef.current);
       return () => {
         engine.registry.unregister(id);
         shapeIdRef.current = null;
       };
-    }, [engine, ready]); // material changes are pushed per-frame below
+    }, [engine, ready, resolvedLayer]); // material changes are pushed per-frame below
 
     // Push material updates into the registry (presets switch live).
     useEffect(() => {
@@ -121,9 +134,10 @@ export const LiquidSurface = forwardRef<HTMLElement, LiquidSurfaceProps>(
       const shape = engineRef.registry.get(id);
       if (shape) {
         shape.state.material = material;
+        shape.state.layer = resolvedLayer;
         shape.dirty = true;
       }
-    }, [engine, material]);
+    }, [engine, material, resolvedLayer]);
 
     // Visibility-based unregistration.
     useEffect(() => {
@@ -167,6 +181,7 @@ export const LiquidSurface = forwardRef<HTMLElement, LiquidSurfaceProps>(
             scale: pressSpring.current.value * hoverScale,
             offsetX: reducedMotion ? 0 : pointerRef.current.x * (interaction?.strength ?? 0.12) * hoverSpring.current.value,
             offsetY: reducedMotion ? 0 : pointerRef.current.y * (interaction?.strength ?? 0.12) * hoverSpring.current.value,
+            layer: resolvedLayer,
           };
           shape.dirty = true;
         }

@@ -548,15 +548,65 @@ export class LiquidEngine {
         }
       }
 
-      this.renderer.render({
-        bgPass: {
+      const layers = this.registry.getActiveLayers();
+      const isMultiLayer = layers.length > 1;
+
+      if (!isMultiLayer || this.backend.kind !== 'webgl') {
+        this.renderer.render({
+          bgPass: {
+            u_bgType: bgType,
+            u_bgTexture: (bgType === 11 && this.bgTextureReady && this.bgTexture ? this.bgTexture : undefined) as never,
+            u_bgTextureRatio: this.bgTextureRatio,
+            u_bgTextureReady: this.bgTextureReady ? 1 : 0,
+          },
+          mainPass: {},
+        });
+      } else {
+        const glRenderer = this.renderer as MultiPassRenderer;
+
+        // 1. Render base backdrop and blur passes
+        glRenderer.renderPass('bgPass', {
           u_bgType: bgType,
           u_bgTexture: (bgType === 11 && this.bgTextureReady && this.bgTexture ? this.bgTexture : undefined) as never,
           u_bgTextureRatio: this.bgTextureRatio,
           u_bgTextureReady: this.bgTextureReady ? 1 : 0,
-        },
-        mainPass: {},
-      });
+        });
+        glRenderer.renderPass('vBlurPass');
+        glRenderer.renderPass('hBlurPass');
+
+        let currentBgTexture: WebGLTexture | null = glRenderer.getPass('bgPass')?.getOutputTexture() ?? null;
+        const currentBlurredTexture: WebGLTexture | null = glRenderer.getPass('hBlurPass')?.getOutputTexture() ?? null;
+
+        for (let idx = 0; idx < layers.length; idx++) {
+          const layerNum = layers[idx];
+          const isLast = idx === layers.length - 1;
+          const layerPack = this.registry.getPackedLayer(layerNum);
+
+          const layerUniforms: Record<string, unknown> = {
+            u_shapeCount: layerPack.count,
+            u_shapesA: layerPack.shapesA,
+            u_shapesB: layerPack.shapesB,
+            u_shapesC: layerPack.shapesC,
+            u_shapeM0: layerPack.shapeM0,
+            u_shapeM1: layerPack.shapeM1,
+            u_shapeM2: layerPack.shapeM2,
+            u_shapeM3: layerPack.shapeM3,
+            u_shapeTint: layerPack.shapeTint,
+            u_bg: currentBgTexture,
+            u_blurredBg: currentBlurredTexture,
+          };
+
+          if (isLast) {
+            // Final layer outputs to canvas screen
+            glRenderer.renderPass('mainPass', layerUniforms, null);
+          } else {
+            // Intermediate layer outputs to FBO buffer
+            const layerFbo = glRenderer.getOrCreateLayerFrameBuffer(idx);
+            glRenderer.renderPass('mainPass', layerUniforms, layerFbo);
+            currentBgTexture = layerFbo.getTexture();
+          }
+        }
+      }
 
       this.lastPackedCount = this.registry.packed.count;
     };

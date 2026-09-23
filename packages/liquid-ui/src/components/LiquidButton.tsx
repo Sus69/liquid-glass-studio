@@ -1,11 +1,11 @@
 import { forwardRef, type ButtonHTMLAttributes, type CSSProperties, type ReactNode } from 'react';
-import type { LiquidGlassInput, LiquidInteraction, LiquidPresetName } from '../types';
+import type { LiquidComponentProps, LiquidGlassInput, LiquidInteraction, LiquidPresetName } from '../types';
 import { LiquidSurface } from './LiquidSurface';
 
 export type LiquidButtonVariant = 'primary' | 'secondary' | 'ghost';
 export type LiquidButtonSize = 'sm' | 'md' | 'lg';
 
-export interface LiquidButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'style'> {
+export interface LiquidButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'style'>, LiquidComponentProps {
   children?: ReactNode;
   /** Visual variant. */
   variant?: LiquidButtonVariant;
@@ -17,6 +17,7 @@ export interface LiquidButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonE
   loading?: boolean;
   className?: string;
   style?: CSSProperties;
+  layer?: number;
 }
 
 const VARIANT_PRESET: Record<LiquidButtonVariant, LiquidPresetName> = {

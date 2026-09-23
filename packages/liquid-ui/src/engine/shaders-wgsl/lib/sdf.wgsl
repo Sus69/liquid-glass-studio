@@ -52,11 +52,17 @@ fn smin(a: f32, b: f32, k: f32) -> f32 {
   return mix(b, a, h) - k * h * (1.0 - h);
 }
 
-// Scene SDF at device-px p: all shapes merged with the original smin.
+// Scene SDF at device-px p: shapes merged with smin when merge > 0, otherwise crisp min.
 fn mainSDF(p: vec2f) -> f32 {
   var d = shapeSDFAt(p, 0);
   for (var i: i32 = 1; i < u.u_shapeCount; i = i + 1) {
-    d = smin(d, shapeSDFAt(p, i), u.u_mergeRate);
+    let m0 = select(0.0, u.u_shapeM3[0].w, u.u_shapeM3[0].w > 0.001);
+    let m = max(u.u_shapeM3[i].w, m0);
+    if (m > 0.001) {
+      d = smin(d, shapeSDFAt(p, i), m);
+    } else {
+      d = min(d, shapeSDFAt(p, i));
+    }
   }
   return d;
 }

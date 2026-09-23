@@ -106,7 +106,12 @@ float sceneSDF(vec2 p) {
   float d = shapeSDFAt(p, 0);
   for (int i = 1; i < MAX_SHAPES; i++) {
     if (i >= u_shapeCount) break;
-    d = smin(d, shapeSDFAt(p, i), u_mergeRate);
+    float m = max(u_shapeM3[i].w, u_shapeM3[0].w > 0.001 ? u_shapeM3[0].w : 0.0);
+    if (m > 0.001) {
+      d = smin(d, shapeSDFAt(p, i), m);
+    } else {
+      d = min(d, shapeSDFAt(p, i));
+    }
   }
   return d;
 }
