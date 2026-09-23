@@ -1,6 +1,6 @@
 {
   "name": "@sus_69/liquid-ui",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "description": "Reusable liquid-glass UI components powered by a shared WebGL2/WebGPU rendering engine.",
   "license": "MIT",
